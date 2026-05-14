@@ -15,11 +15,11 @@ type Config struct {
 }
 
 func Read() (Config, error) {
-	filePath, err := getConfigFilePath()
+	fullPath, err := getConfigFilePath()
 	if err != nil {
 		return Config{}, err
 	}
-	file, err := os.Open(filePath)
+	file, err := os.Open(fullPath)
 	if err != nil {
 		return Config{}, err
 	}
@@ -33,6 +33,11 @@ func Read() (Config, error) {
 	return config, nil
 }
 
+func (cfg *Config) SetUser(username string) error {
+	cfg.CurrentUserName = username
+	return write(*cfg)
+}
+
 func getConfigFilePath() (string, error) {
 	homePath, err := os.UserHomeDir()
 	if err != nil {
@@ -40,4 +45,24 @@ func getConfigFilePath() (string, error) {
 	}
 	configFilePath := homePath + "/" + configFileName
 	return configFilePath, nil
+}
+
+func write(cfg Config) error {
+	fullPath, err := getConfigFilePath()
+	if err != nil {
+		return err
+	}
+	file, err := os.Create(fullPath)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	err = encoder.Encode(cfg)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
