@@ -14,7 +14,7 @@ type state struct {
 func main() {
 	cfg, err := config.Read()
 	if err != nil {
-		log.Fatalf("error reading config: %w", err)
+		log.Fatalf("error reading config: %v", err)
 	}
 	programState := &state{
 		cfg: &cfg,
@@ -25,7 +25,7 @@ func main() {
 
 	cmds.register("login", handlerLogin)
 	if len(os.Args) < 2 {
-		log.Fatal("Usage: cli <command> [args...]")
+		log.Fatal("usage: cli <command> [args...]")
 	}
 
 	cmdName := os.Args[1]
