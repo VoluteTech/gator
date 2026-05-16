@@ -33,6 +33,11 @@ func handlerRegister(s *state, cmd command) error {
 		return fmt.Errorf("usage: %s <name>", cmd.Name)
 	}
 	name := cmd.Args[0]
+	_, err := s.db.GetUser(context.Background(), name)
+	if err == nil {
+		return fmt.Errorf("the username %s is taken", name)
+	}
+
 	user, err := s.db.CreateUser(context.Background(), database.CreateUserParams{
 		ID: uuid.New(),
 		CreatedAt: time.Now().UTC(),
