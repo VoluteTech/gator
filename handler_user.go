@@ -63,6 +63,10 @@ func handlerUsers(s *state, cmd command) error {
 	if err != nil {
 		return fmt.Errorf("couldn't load the users: %w", err)
 	}
+	if len(users) == 0 {
+		fmt.Println("No registered users")
+	}
+
 	for _, user := range users {
 		if user.Name == s.cfg.CurrentUserName {
 			fmt.Printf("* %s (current)\n", user.Name)
